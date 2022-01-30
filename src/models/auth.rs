@@ -12,7 +12,6 @@ pub struct AuthBody {
     token_type: String,
 }
 
-
 impl AuthBody {
     pub fn new(access_token: String) -> Self {
         Self {

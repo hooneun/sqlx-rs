@@ -1,13 +1,8 @@
 use std::net::SocketAddr;
 
-use axum::Json;
-use jsonwebtoken::{encode, EncodingKey, Header};
-use serde::{Deserialize, Serialize};
 use sqlx::MySqlPool;
 
-use error::AuthError;
-use jwt::Claims;
-
+mod configs;
 mod error;
 mod extractors;
 mod handlers;
@@ -18,7 +13,9 @@ mod router;
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL Not found");
+
+    let database_url = configs::db::DB::url();
+
     let pool = MySqlPool::connect(&database_url).await.unwrap();
 
     tracing_subscriber::fmt::init();
@@ -29,10 +26,4 @@ async fn main() {
         .serve(router::router(pool).into_make_service())
         .await
         .unwrap();
-}
-
-#[derive(Debug)]
-struct LoginInput {
-    login_id: String,
-    password: String,
 }

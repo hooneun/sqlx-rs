@@ -1,6 +1,6 @@
-use std::fmt::Display;
-use serde::{Serialize, Deserialize};
 use chrono::{Duration, Utc};
+use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {

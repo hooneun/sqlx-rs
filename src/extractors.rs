@@ -2,7 +2,7 @@ use axum::{
     async_trait,
     extract::{FromRequest, RequestParts, TypedHeader},
 };
-use headers::{Authorization, authorization::Bearer};
+use headers::{authorization::Bearer, Authorization};
 use jsonwebtoken::{decode, DecodingKey, Validation};
 
 use crate::error::AuthError;
@@ -10,8 +10,8 @@ use crate::jwt::Claims;
 
 #[async_trait]
 impl<B> FromRequest<B> for Claims
-    where
-        B: Send,
+where
+    B: Send,
 {
     type Rejection = AuthError;
 
@@ -21,8 +21,12 @@ impl<B> FromRequest<B> for Claims
                 .await
                 .map_err(|_| AuthError::InvalidToken)?;
 
-        let token_data = decode::<Claims>(bearer.token(), &DecodingKey::from_secret("secret".as_bytes()), &Validation::default())
-            .map_err(|_| AuthError::InvalidToken)?;
+        let token_data = decode::<Claims>(
+            bearer.token(),
+            &DecodingKey::from_secret("secret".as_bytes()),
+            &Validation::default(),
+        )
+        .map_err(|_| AuthError::InvalidToken)?;
 
         Ok(token_data.claims)
     }

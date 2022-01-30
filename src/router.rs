@@ -1,17 +1,11 @@
-use sqlx::{MySqlPool};
 use axum::{
-    Router,
     routing::{get, post},
-    AddExtensionLayer,
+    AddExtensionLayer, Router,
 };
+use handlers::{authorize, index, non_protected, protected, unauth_protected};
+use sqlx::MySqlPool;
 use tower::ServiceBuilder;
-use tower_http::{trace::TraceLayer};
-use handlers::{
-    protected,
-    non_protected,
-    index,
-    authorize,
-};
+use tower_http::trace::TraceLayer;
 
 use crate::handlers;
 
@@ -26,5 +20,6 @@ pub fn router(pg_pool: MySqlPool) -> Router {
         .route("/authorize", post(authorize))
         .route("/protected", get(protected))
         .route("/non_protected", get(non_protected))
+        .route("/unauth_protected", get(unauth_protected))
         .layer(middleware)
 }

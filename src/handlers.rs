@@ -3,6 +3,7 @@ use axum::Json;
 use jsonwebtoken::{encode, EncodingKey, Header};
 use serde_json::{json, Value};
 use sqlx::{MySql, Pool};
+use tower::buffer::future::ResponseFuture;
 
 use crate::{
     error::AuthError,
@@ -18,6 +19,10 @@ pub async fn protected(claims: Claims) -> Result<String, AuthError> {
         "Welcome to the protected area :)\nYour data:\n{}",
         claims
     ))
+}
+
+pub async fn unauth_protected(_: Claims) -> Result<String, AuthError> {
+    Ok(format!("Unauthorization Test :)"))
 }
 
 pub async fn non_protected() -> Result<String, AuthError> {
